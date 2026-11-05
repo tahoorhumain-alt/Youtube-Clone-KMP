@@ -192,7 +192,7 @@ fun DetailContent(
 
 
     val scope = rememberCoroutineScope()
-    val videoUrl by remember { mutableStateOf("https://www.youtube.com/watch?v=${video?.id}") }
+    val videoUrl by remember { mutableStateOf(org.company.app.core.common.Constant.playUrl(video?.id)) }
     val videoDownloader = remember { VideoDownloader() }
     var downloadOutput by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
@@ -283,7 +283,7 @@ fun DetailContent(
             if (displayVideoPlayer) {
                 VideoPlayer(
                     modifier = Modifier.fillMaxWidth().height(340.dp),
-                    url = "https://www.youtube.com/watch?v=${video?.id}",
+                    url = org.company.app.core.common.Constant.playUrl(video?.id),
                     autoPlay = true
                 )
                 IconButton(onClick = {
@@ -503,7 +503,7 @@ fun DetailContent(
                     if (isShareEnabled) {
                         ShareManager(
                             title = video?.snippet?.title.toString(),
-                            videoUrl = Constant.VIDEO_URL + video?.id
+                            videoUrl = Constant.playUrl(video?.id)
                         )
                     }
                 }
@@ -832,7 +832,7 @@ fun DetailContent(
                 ) {
 
                     NetworkImage(
-                        url = commentData?.items?.first()?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl
+                        url = commentData?.items?.firstOrNull()?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl
                             ?: channelData?.snippet?.thumbnails?.high?.url.toString(),
                         contentDescription = "Comment User Profile",
                         modifier = Modifier.size(25.dp).clip(shape = CircleShape),
@@ -840,7 +840,7 @@ fun DetailContent(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     val firstComment =
-                        commentData?.items?.get(0)?.snippet?.topLevelComment?.snippet?.textOriginal
+                        commentData?.items?.getOrNull(0)?.snippet?.topLevelComment?.snippet?.textOriginal
                             ?: "No Comments Available"
                     Text(
                         text = firstComment,
@@ -1209,7 +1209,7 @@ fun DetailContent(
         }
         var commentInput by remember { mutableStateOf("") }
 
-        if (commentData?.items?.first()?.snippet?.topLevelComment?.snippet?.textOriginal?.isNotEmpty() == true) {
+        if (commentData?.items?.firstOrNull()?.snippet?.topLevelComment?.snippet?.textOriginal?.isNotEmpty() == true) {
             ModalBottomSheet(
                 onDismissRequest = {
                     isCommentLive = false
