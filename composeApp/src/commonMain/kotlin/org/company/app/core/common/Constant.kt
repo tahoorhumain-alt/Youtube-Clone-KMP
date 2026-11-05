@@ -1,8 +1,13 @@
 package org.company.app.core.common
 
 object Constant {
-    const val BASE_URL = "https://www.googleapis.com/youtube/v3/"
-    const val API_KEY = "AIzaSyATK5cfxRwEFXlp73Su6HrExL5_6Z0puYw"
+    const val REELS_BASE_URL = "https://reels-video-storage.onrender.com"
+    const val BASE_URL = "$REELS_BASE_URL/"
     const val TIMEOUT = 10000L
-    const val VIDEO_URL = "https://www.youtube.com/watch?v="
+    // Render free tier sleeps; the first request can take ~60s
+    const val REELS_TIMEOUT = 90000L
+
+    /** Video "id" is now the playable URL coming from the server. */
+    fun playUrl(id: String?): String = id.orEmpty()
+    const val VIDEO_URL = ""
 }
