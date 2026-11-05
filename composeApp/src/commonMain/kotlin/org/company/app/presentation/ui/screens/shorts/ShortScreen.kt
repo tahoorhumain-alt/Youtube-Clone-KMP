@@ -2,21 +2,17 @@ package org.company.app.presentation.ui.screens.shorts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.screen.Screen
-import org.company.app.UserRegion
-import org.company.app.domain.model.videos.Youtube
-import org.company.app.domain.usecases.ResultState
+import org.company.app.data.remote.Reel
+import org.company.app.data.remote.ReelsApi
 import org.company.app.presentation.ui.components.error.ErrorScreen
 import org.company.app.presentation.ui.components.shimmer.ShimmerEffectShorts
-import org.company.app.presentation.ui.components.shorts.ShortList
-import org.company.app.presentation.viewmodel.MainViewModel
+import org.company.app.presentation.ui.components.shorts.ReelList
 import org.koin.compose.koinInject
-
 
 class ShortScreen() : Screen {
     @Composable
@@ -26,41 +22,24 @@ class ShortScreen() : Screen {
 }
 
 @Composable
-fun ShortContent(viewModel: MainViewModel = koinInject<MainViewModel>()) {
-    var shortsData by remember { mutableStateOf<Youtube?>(null) }
-    /* UnComment this, If you want to use the Dark Theme
-    When User enter the Shorts Screen
-    var isDark by LocalThemeIsDark.current
-    isDark = isSystemInDarkTheme()
-    isDark = true
-    DisposableEffect(isDark){
-        onDispose {
-            isDark = false
-        }
-    }*/
-    LaunchedEffect(Unit) {
-        viewModel.getVideosList(UserRegion())
-    }
-    val state by viewModel.videos.collectAsState()
-    when (state) {
-        is ResultState.LOADING -> {
-            ShimmerEffectShorts()
-        }
+fun ShortContent(api: ReelsApi = koinInject<ReelsApi>()) {
+    var reels by remember { mutableStateOf<List<Reel>?>(null) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var attempt by remember { mutableStateOf(0) }
 
-        is ResultState.SUCCESS -> {
-            val data = (state as ResultState.SUCCESS).response
-            shortsData = data
-        }
-
-        is ResultState.ERROR -> {
-            val error = (state as ResultState.ERROR).error
-            ErrorScreen(error, onRetry = {
-                viewModel.getVideosList(UserRegion())
-            })
-
+    LaunchedEffect(attempt) {
+        error = null
+        reels = null
+        try {
+            reels = api.reels()
+        } catch (e: Exception) {
+            error = e.message ?: "Could not load reels"
         }
     }
-    shortsData?.let { shorts ->
-        ShortList(shorts)
+
+    when {
+        error != null -> ErrorScreen(error!!, onRetry = { attempt++ })
+        reels == null -> ShimmerEffectShorts()
+        else -> ReelList(reels!!)
     }
 }
