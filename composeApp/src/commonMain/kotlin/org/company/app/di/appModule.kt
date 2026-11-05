@@ -14,6 +14,7 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.company.app.DriverFactory
+import org.company.app.data.remote.ReelsApi
 import org.company.app.data.remote.YoutubeClientApi
 import org.company.app.data.repository.YouTubeServiceImpl
 import org.company.app.presentation.viewmodel.MainViewModel
@@ -58,6 +59,7 @@ val appModule = module {
         }
     }
     single { YoutubeClientApi(get()) }
+    single { ReelsApi(get()) }
     single { Firebase.database }
     singleOf(::YouTubeServiceImpl)
     single { YoutubeDatabase(DriverFactory().createDriver()) }
