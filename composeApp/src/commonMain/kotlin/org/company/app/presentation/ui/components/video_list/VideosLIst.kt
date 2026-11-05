@@ -726,7 +726,7 @@ fun VideoItemCard(
     }
 
     val scope = rememberCoroutineScope()
-    var videoUrl by remember { mutableStateOf("https://www.youtube.com/watch?v=${video.id}") }
+    var videoUrl by remember { mutableStateOf(org.company.app.core.common.Constant.playUrl(video.id)) }
     val videoDownloader = remember { VideoDownloader() }
     var downloadOutput by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
@@ -1110,7 +1110,7 @@ fun VideoItemCard(
                     if (isShareEnabled) {
                         ShareManager(
                             title = video.snippet?.title.toString(),
-                            videoUrl = "https://www.youtube.com/watch?v=${video.id}"
+                            videoUrl = org.company.app.core.common.Constant.playUrl(video.id)
                         )
                     }
                 }
@@ -1168,7 +1168,7 @@ fun VideoItemGridCard(
     }
 
     val scope = rememberCoroutineScope()
-    var videoUrl by remember { mutableStateOf("https://www.youtube.com/watch?v=${video.id}") }
+    var videoUrl by remember { mutableStateOf(org.company.app.core.common.Constant.playUrl(video.id)) }
     val videoDownloader = remember { VideoDownloader() }
     var downloadOutput by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
@@ -1505,7 +1505,7 @@ fun VideoItemGridCard(
                     if (isShareEnabled) {
                         ShareManager(
                             title = video.snippet?.title.toString(),
-                            videoUrl = "https://www.youtube.com/watch?v=${video.id}"
+                            videoUrl = org.company.app.core.common.Constant.playUrl(video.id)
                         )
                     }
                 }
